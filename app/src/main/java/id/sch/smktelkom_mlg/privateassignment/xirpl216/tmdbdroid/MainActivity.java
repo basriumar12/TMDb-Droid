@@ -1,8 +1,11 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,6 +21,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public Fragment fragment = null;
+    public Bundle bundle = new Bundle();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.mov_popular);
+        onNavigationItemSelected(navigationView.getMenu().findItem(R.id.mov_popular));
     }
 
     @Override
@@ -58,8 +66,12 @@ public class MainActivity extends AppCompatActivity
                 if( ! searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
+
+                Intent i = new Intent(MainActivity.this,SearchActivity.class);
+                i.putExtra("kind",bundle.getString("kind"));
+                startActivity(i);
                 myActionMenuItem.collapseActionView();
-                Toast.makeText(getApplicationContext(),query,Toast.LENGTH_SHORT).show();
+
                 return false;
             }
             @Override
@@ -89,32 +101,68 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         String fragmentTitle = "";
-
+        fragment = null;
+        bundle = new Bundle();
         // Movies
         if(id == R.id.mov_popular){
             fragmentTitle = "Popular";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","movie");
+            bundle.putString("type","popular");
         }else if(id == R.id.mov_now){
             fragmentTitle = "Now Playing";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","movie");
+            bundle.putString("type","now_playing");
         }else if(id == R.id.mov_upcoming){
             fragmentTitle = "Upcoming";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","movie");
+            bundle.putString("type","upcoming");
         }
 
         // TV Shows
         if(id == R.id.tv_popular){
             fragmentTitle = "Popular";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","tv");
+            bundle.putString("type","popular");
         }else if(id == R.id.tv_now){
             fragmentTitle = "Now Airing";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","tv");
+            bundle.putString("type","now");
         }else if(id == R.id.tv_upcoming){
             fragmentTitle = "Upcoming";
+            fragment = new MainGridFragment();
+
+            bundle.putString("kind","tv");
+            bundle.putString("type","upcoming");
         }
 
         if(id == R.id.nav_saved){
+            fragment = new SavedFragment();
             fragmentTitle = "Saved";
         }
 
-        setTitle(fragmentTitle);
+        fragment.setArguments(bundle);
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        // set the toolbar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(fragmentTitle);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

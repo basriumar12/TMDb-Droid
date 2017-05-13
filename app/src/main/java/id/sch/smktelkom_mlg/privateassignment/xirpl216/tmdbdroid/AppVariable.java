@@ -6,4 +6,7 @@ package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
 public class AppVariable {
     public static String TMDB_APIKEY = "04cb09ef9225cd14e21a36c226cd084c";
+
+    public enum Type{MOVIE,TV}
+    public enum Kind{TRENDING,NOW,UPCOMING}
 }
