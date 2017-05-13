@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item android:title="Movies">
+            <menu>
+                <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/mov_popular"
+                    android:icon="@drawable/ic_trending_up_black_24dp"
+                    android:title="Popular" />
+                <item
+                    android:id="@+id/mov_now"
+                    android:icon="@drawable/ic_ondemand_video_black_24dp"
+                    android:title="Now Playing" />
+                <item
+                    android:id="@+id/mov_upcoming"
+                    android:icon="@drawable/ic_event_black_24dp"
+                    android:title="Upcoming" />
+                </group>
+            </menu>
+        </item>
+
+        <item android:title="TV Shows">
+            <menu>
+                <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/tv_popular"
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:title="Popular" />
+            <item
+                android:id="@+id/tv_now"
+                android:icon="@drawable/ic_ondemand_video_black_24dp"
+                android:title="Now Airing" />
+            <item
+                android:id="@+id/tv_upcoming"
+                android:icon="@drawable/ic_event_black_24dp"
+                android:title="Upcoming" />
+                </group>
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/nav_saved"
+            android:icon="@drawable/ic_archive_black_24dp"
+            android:title="Saved" />
+    </group>
+
+
+</menu>
