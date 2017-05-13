@@ -69,7 +69,10 @@ public class MainActivity extends AppCompatActivity
 
                 Intent i = new Intent(MainActivity.this,SearchActivity.class);
                 i.putExtra("kind",bundle.getString("kind"));
+                i.putExtra("query",query);
+
                 startActivity(i);
+
                 myActionMenuItem.collapseActionView();
 
                 return false;
@@ -137,14 +140,14 @@ public class MainActivity extends AppCompatActivity
             fragment = new MainGridFragment();
 
             bundle.putString("kind","tv");
-            bundle.putString("type","now");
-        }else if(id == R.id.tv_upcoming){
+            bundle.putString("type","on_the_air");
+        }/*else if(id == R.id.tv_upcoming){
             fragmentTitle = "Upcoming";
             fragment = new MainGridFragment();
 
             bundle.putString("kind","tv");
             bundle.putString("type","upcoming");
-        }
+        }*/
 
         if(id == R.id.nav_saved){
             fragment = new SavedFragment();

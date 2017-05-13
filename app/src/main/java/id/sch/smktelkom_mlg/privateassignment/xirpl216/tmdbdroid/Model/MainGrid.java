@@ -21,11 +21,22 @@ public class MainGrid {
         this.title = title;
     }
 
-    public MainGrid(String picture, String title) {
+    public MainGrid(String picture, String title, String Id) {
         this.picture = picture;
         this.title = title;
+        this.Id = Id;
     }
 
     String picture;
     String title;
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    String Id;
 }

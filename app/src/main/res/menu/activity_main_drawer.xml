@@ -33,10 +33,10 @@
                 android:id="@+id/tv_now"
                 android:icon="@drawable/ic_ondemand_video_black_24dp"
                 android:title="Now Airing" />
-            <item
+            <!-- <item
                 android:id="@+id/tv_upcoming"
                 android:icon="@drawable/ic_event_black_24dp"
-                android:title="Upcoming" />
+                android:title="Upcoming" /> --> <!-- Disabling this menu due unsupported. -->
                 </group>
             </menu>
         </item>

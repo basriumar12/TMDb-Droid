@@ -1,6 +1,7 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -46,6 +47,8 @@ public class MainGridFragment extends Fragment {
 
     private GridLayoutManager lLayout;
     private RecyclerView rv;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,15 +69,19 @@ public class MainGridFragment extends Fragment {
 
         doSomething();
 
-
-
-
         return v;
         
     }
 
-    private List<MainGrid> fetchDataFromInternet() {
-        List<MainGrid> mg = new ArrayList<MainGrid>();
+    /*private List<MainGrid> fetchDataFromInternet() {
+
+        //return mg;
+    }*/
+
+    private void doSomething() {
+        Log.d("TRIGGER","DO SOMETHING IS TRIGGERED!");
+        //final List<MainGrid> rowList = fetchDataFromInternet();
+        final List<MainGrid> mg = new ArrayList<MainGrid>();
 
         Bundle bundle = this.getArguments();
         if(!bundle.isEmpty()){
@@ -86,16 +93,69 @@ public class MainGridFragment extends Fragment {
 
         RequestQueue rq = Volley.newRequestQueue(getContext());
         String url = String.format("https://api.themoviedb.org/3/%s/%s?api_key=%s&page=%s&language=en-US",kind,type,AppVariable.TMDB_APIKEY,"1");
-
+        Log.d("??",url);
         JsonObjectRequest jObj = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
                 try {
-                    JSONArray results = response.getJSONArray("response");
-                    Log.d("APPCOUNT",String.valueOf(results.length()));
+                    JSONArray jA = response.getJSONArray("results");
+
+                    for(int i = 0; i < jA.length(); i++){
+                        JSONObject jO = (JSONObject) jA.get(i);
+
+                        String mvTitle = "", mvPic = "", mvId = "";
+                        if(kind == "movie") {
+                            mvTitle = jO.getString("title");
+                            mvPic = jO.getString("poster_path");
+                            mvId = jO.getString("id");
+                        }else if(kind == "tv"){
+                            mvTitle = jO.getString("name");
+                            mvPic = jO.getString("poster_path");
+                            mvId = jO.getString("id");
+                        }
+
+                        mvPic = AppVariable.TMDB_BASEPATH_IMG + mvPic;
+
+                        Log.d("PIC",mvPic);
+                        mg.add(new MainGrid(mvPic,mvTitle,mvId));
+
+                        if(i == jA.length() - 1){
+                            // At Least it works btw.
+                            MainGridAdapter mgAdapter = new MainGridAdapter(getActivity(),mg);
+                            rv.setAdapter(mgAdapter);
+                            if(rv.getAdapter() != null) {
+                                rv.swapAdapter(mgAdapter, true);
+                            }
+                            rv.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    MainGrid selectedMG = mg.get(position);
+                                    if(kind == "movie"){
+                                        Intent i = new Intent(getContext(),ItemDetailActivityMovie.class);
+                                        i.putExtra("title",selectedMG.getTitle());
+                                        i.putExtra("id",selectedMG.getId());
+                                        startActivity(i);
+                                    }else if(kind == "tv"){
+                                        Intent i = new Intent(getContext(),ItemDetailActivityTV.class);
+                                        i.putExtra("title",selectedMG.getTitle());
+                                        i.putExtra("id",selectedMG.getId());
+                                        startActivity(i);
+                                    }
+                                    //Toast.makeText(getContext(),selectedMG.getId(),Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onLongItemClick(View view, int position) {
+
+                                }
+                            }));
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -106,27 +166,8 @@ public class MainGridFragment extends Fragment {
         rq.add(jObj);
 
         for(int i = 0; i < 20; i++){
-            mg.add(new MainGrid("https://image.tmdb.org/t/p/w500_and_h281_bestv2/tQkigP2fItdzJWvtIhBvHxgs5yE.jpg","It's a fucking long movie title " + String.valueOf(i)));
+            //mg.add(new MainGrid("https://image.tmdb.org/t/p/w500_and_h281_bestv2/tQkigP2fItdzJWvtIhBvHxgs5yE.jpg","It's a fucking long movie title " + String.valueOf(i)));
         }
-        return mg;
-    }
-
-    private void doSomething() {
-        final List<MainGrid> rowList = fetchDataFromInternet();
-        MainGridAdapter mgAdapter = new MainGridAdapter(getActivity(),rowList);
-        rv.setAdapter(mgAdapter);
-        rv.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                MainGrid selectedMG = rowList.get(position);
-                Toast.makeText(getContext(),selectedMG.getTitle(),Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
     }
 
 
