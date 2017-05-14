@@ -51,7 +51,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolders> {
 
         holder.searchTitle.setText(itemList.get(position).getTitle());
         //Log.d("APPIMG",itemList.get(position).getPicture());
-        Glide.with(context).load(AppVariable.TMDB_BASEPATH_IMG+itemList.get(position).getImage()).placeholder(R.drawable.ic_tmdb_icon_green).into(holder.searchPicture);
+        Glide.with(context).load(AppVariable.TMDB_BASEPATH_IMG+itemList.get(position).getImage()).into(holder.searchPicture);
 
     }
 

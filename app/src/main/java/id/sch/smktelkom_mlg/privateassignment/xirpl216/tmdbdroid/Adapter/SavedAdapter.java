@@ -41,7 +41,7 @@ public class SavedAdapter extends RecyclerView.Adapter<SavedViewHolders> {
     public void onBindViewHolder(SavedViewHolders holder, int position) {
 
 
-        holder.savedYear.setText(itemList.get(position).getYear());
+        //holder.savedYear.setText(itemList.get(position).getYear());
 
         String ov = itemList.get(position).getOverview();
         if(ov.length() >= 256){

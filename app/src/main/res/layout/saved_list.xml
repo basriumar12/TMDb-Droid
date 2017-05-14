@@ -34,11 +34,11 @@
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
 
-            <TextView
+            <!--<TextView
                 android:text="2016"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/savedYear" />
+                android:id="@+id/savedYear" /> -->
         </LinearLayout>
 
     </RelativeLayout>

@@ -19,7 +19,7 @@ public class SavedViewHolders extends RecyclerView.ViewHolder implements View.On
         itemView.setOnClickListener(this);
         savedTitle = (TextView) itemView.findViewById(R.id.savedTitle);
         savedOverview = (TextView) itemView.findViewById(R.id.savedOverview);
-        savedYear = (TextView) itemView.findViewById(R.id.savedYear);
+        //savedYear = (TextView) itemView.findViewById(R.id.savedYear);
     }
 
     @Override

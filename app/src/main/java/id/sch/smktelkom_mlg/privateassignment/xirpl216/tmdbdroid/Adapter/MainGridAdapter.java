@@ -41,7 +41,7 @@ public class MainGridAdapter extends RecyclerView.Adapter<MainGridViewHolders> {
 
         holder.itemName.setText(itemList.get(position).getTitle());
         //Log.d("APPIMG",itemList.get(position).getPicture());
-        Glide.with(context).load(itemList.get(position).getPicture()).placeholder(R.drawable.ic_tmdb_icon_green).into(holder.itemPhoto);
+        Glide.with(context).load(itemList.get(position).getPicture()).into(holder.itemPhoto);
 
     }
 
