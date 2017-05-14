@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -58,6 +59,8 @@ public class SearchActivity extends AppCompatActivity {
             finish();
         }
 
+        TextView tvS = (TextView)findViewById(R.id.tvSearchTxt);
+        tvS.setText(String.format("Search Results for %s",getIntent().getStringExtra("query")));
         listItem = new ArrayList<Search>();
         lLayout = new GridLayoutManager(SearchActivity.this,1);
         rView = (RecyclerView)findViewById(R.id.rvSearch);

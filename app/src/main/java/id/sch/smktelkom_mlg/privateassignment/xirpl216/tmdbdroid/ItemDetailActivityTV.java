@@ -73,23 +73,27 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                     Overview.setText(response.getString("overview"));
                     Status.setText(response.getString("status"));
 
-                    String mixedCreatedBy = "";
-                    JSONArray createdByArray = response.getJSONArray("created_by");
-                    for(int i = 0; i < createdByArray.length(); i++){
-                        JSONObject jObj = (JSONObject) createdByArray.get(i);
-                        if(i == 0){
-                            mixedCreatedBy = jObj.getString("name");
-                        }else{
-                            mixedCreatedBy = mixedCreatedBy + ", " + jObj.getString("name");
+                    try {
+                        String mixedCreatedBy = "";
+                        JSONArray createdByArray = response.getJSONArray("created_by");
+                        for (int i = 0; i < createdByArray.length(); i++) {
+                            JSONObject jObj = (JSONObject) createdByArray.get(i);
+                            if (i == 0) {
+                                mixedCreatedBy = jObj.getString("name");
+                            } else {
+                                mixedCreatedBy = mixedCreatedBy + ", " + jObj.getString("name");
+                            }
                         }
+                        CreatedBy.setText(mixedCreatedBy);
+                    }catch(Exception ex){
+                        CreatedBy.setText("N/A");
                     }
 
-                    CreatedBy.setText(mixedCreatedBy);
-
+                    try{
                     String mixedCompany = "";
                     JSONArray companyByArray = response.getJSONArray("production_companies");
                     for(int i = 0; i < companyByArray.length(); i++){
-                        JSONObject jObj = (JSONObject) createdByArray.get(i);
+                        JSONObject jObj = (JSONObject) companyByArray.get(i);
                         if(i == 0){
                             mixedCompany = jObj.getString("name");
                         }else{
@@ -98,21 +102,32 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                     }
 
                     ProductionCompany.setText(mixedCompany);
+                    }catch(Exception ex){
+
+                        ProductionCompany.setText("N/A");
+                    }
 
                     FirstAiring.setText(response.getString("first_air_date"));
                     LastAiring.setText(response.getString("last_air_date"));
 
-                    Integer amountOfSeasons = 0;
-                    Integer amountOfTotalEpisodes = 0;
-                    JSONArray seasonsByArray = response.getJSONArray("seasons");
-                    amountOfSeasons = seasonsByArray.length();
-                    for(int i = 0; i < seasonsByArray.length(); i++){
-                        JSONObject jObj = (JSONObject) seasonsByArray.get(i);
-                        Integer episodes = jObj.getInt("episode_count");
-                        amountOfTotalEpisodes = amountOfTotalEpisodes + episodes;
-                    }
+                    try {
+                        Integer amountOfSeasons = 0;
 
-                    Seasons.setText(String.format("%s Seasons with %s Total Episodes",String.valueOf(amountOfSeasons),String.valueOf(amountOfTotalEpisodes)));
+                        Integer amountOfTotalEpisodes = 0;
+                        JSONArray seasonsByArray = response.getJSONArray("seasons");
+                        amountOfSeasons = seasonsByArray.length();
+                        for (int i = 0; i < seasonsByArray.length(); i++) {
+                            JSONObject jObj = (JSONObject) seasonsByArray.get(i);
+                            Integer episodes = jObj.getInt("episode_count");
+                            amountOfTotalEpisodes = amountOfTotalEpisodes + episodes;
+                        }
+
+                        Seasons.setText(String.format("%s Seasons with %s Total Episodes", String.valueOf(amountOfSeasons), String.valueOf(amountOfTotalEpisodes)));
+
+                    }catch (Exception ex){
+                        Seasons.setText("N/A");
+
+                    }
                     VoteAverage.setText(response.getString("vote_average"));
                     final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout2);
 
