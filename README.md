@@ -33,10 +33,10 @@ Selain itu dengan adanya fitur search di aplikasi ini memungkinkan pengguna menc
 
 ## Screenshot
 
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/1.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/2.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/3.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/4.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/5.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/6.png "Screenshot")
-![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/Screenshots/7.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/1.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/2.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/3.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/4.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/5.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/6.png "Screenshot")
+![Screenshot](https://github.com/mfaishalakbar/TMDb-Droid/blob/master/Screenshots/7.png "Screenshot")
