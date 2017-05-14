@@ -23,11 +23,14 @@ public class MainActivity extends AppCompatActivity
 
     public Fragment fragment = null;
     public Bundle bundle = new Bundle();
+    public Toolbar toolbar;
+    public  MenuItem myActionMenuItem;
+    public String kind;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        final MenuItem myActionMenuItem = menu.findItem( R.id.search);
+        myActionMenuItem = menu.findItem( R.id.search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 Intent i = new Intent(MainActivity.this,SearchActivity.class);
-                i.putExtra("kind",bundle.getString("kind"));
+                i.putExtra("kind",kind);
                 i.putExtra("query",query);
 
                 startActivity(i);
@@ -108,22 +111,32 @@ public class MainActivity extends AppCompatActivity
         fragment = null;
         bundle = new Bundle();
         // Movies
+
+        if(id == R.id.nav_saved){
+            Intent i = new Intent(MainActivity.this,SavedActivity.class);
+            startActivity(i);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
         if(id == R.id.mov_popular){
             fragmentTitle = "Popular";
             fragment = new MainGridFragment();
 
+            kind = "movie";
             bundle.putString("kind","movie");
             bundle.putString("type","popular");
         }else if(id == R.id.mov_now){
             fragmentTitle = "Now Playing";
             fragment = new MainGridFragment();
-
+            kind = "movie";
             bundle.putString("kind","movie");
             bundle.putString("type","now_playing");
         }else if(id == R.id.mov_upcoming){
             fragmentTitle = "Upcoming";
             fragment = new MainGridFragment();
-
+            kind = "movie";
             bundle.putString("kind","movie");
             bundle.putString("type","upcoming");
         }
@@ -132,13 +145,13 @@ public class MainActivity extends AppCompatActivity
         if(id == R.id.tv_popular){
             fragmentTitle = "Popular";
             fragment = new MainGridFragment();
-
+            kind = "tv";
             bundle.putString("kind","tv");
             bundle.putString("type","popular");
         }else if(id == R.id.tv_now){
             fragmentTitle = "Now Airing";
             fragment = new MainGridFragment();
-
+            kind = "tv";
             bundle.putString("kind","tv");
             bundle.putString("type","on_the_air");
         }/*else if(id == R.id.tv_upcoming){
@@ -149,18 +162,19 @@ public class MainActivity extends AppCompatActivity
             bundle.putString("type","upcoming");
         }*/
 
-        if(id == R.id.nav_saved){
-            fragment = new SavedFragment();
-            fragmentTitle = "Saved";
-        }
+
+
+
 
         fragment.setArguments(bundle);
 
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
-            ft.commit();
-        }
+
+            if (fragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+            }
+
 
         // set the toolbar title
         if (getSupportActionBar() != null) {

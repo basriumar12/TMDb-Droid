@@ -27,10 +27,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid.DB.TVShows;
+
 public class ItemDetailActivityTV extends AppCompatActivity {
 
     TextView OriginalName,Overview,Status,CreatedBy,ProductionCompany,FirstAiring,LastAiring,Seasons,VoteAverage;
-   
+    public TVShows tv = new TVShows();
+    public Boolean isFinished = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +57,48 @@ public class ItemDetailActivityTV extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(isFinished == true){
+                    tv.save();
+                    Snackbar.make(view, "TV Show Archived, You can show this information anytime without internet now.", Snackbar.LENGTH_LONG)
+                            .setAction("Got It", null).show();
+                }
             }
         });
 
         setTitle(getIntent().getStringExtra("title"));
-        showSomeTVShowGoodness();
+
+        if(getIntent().getBooleanExtra("archive",false) == true){
+
+            fetchOffline();
+        }else{
+
+            showSomeTVShowGoodness();
+        }
+    }
+
+    private void fetchOffline() {
+        List<TVShows> ltv = TVShows.find(TVShows.class,"tv_id = ?",getIntent().getStringExtra("id"));
+        TVShows myTv = ltv.get(0);
+
+        OriginalName.setText(myTv.getOriginalTitle());
+        Overview.setText(myTv.getOverview());
+        Status.setText(myTv.getStatus());
+        CreatedBy.setText(myTv.getCreatedBy());
+        ProductionCompany.setText(myTv.getProductionCompany());
+        FirstAiring.setText(myTv.getFirstAiringDate());
+        LastAiring.setText(myTv.getLastAiringDate());
+        Seasons.setText(myTv.getAmountOfSeasons());
+        VoteAverage.setText(myTv.getVoteAverage());
+
+        final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout2);
+
+        Glide.with(ItemDetailActivityTV.this).load(AppVariable.TMDB_BASEPATH_IMG_ORIGINAL+myTv.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                Drawable d = new BitmapDrawable(getResources(),resource);
+                ctl.setBackground(d);
+            }
+        });
     }
 
     private void showSomeTVShowGoodness() {
@@ -70,9 +110,11 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                 try {
 
                     OriginalName.setText(response.getString("original_name"));
+                    tv.setOriginalTitle(response.getString("original_name"));
                     Overview.setText(response.getString("overview"));
+                    tv.setOverview(response.getString("overview"));
                     Status.setText(response.getString("status"));
-
+                    tv.setStatus(response.getString("status"));
                     try {
                         String mixedCreatedBy = "";
                         JSONArray createdByArray = response.getJSONArray("created_by");
@@ -85,8 +127,10 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                             }
                         }
                         CreatedBy.setText(mixedCreatedBy);
+                        tv.setCreatedBy(mixedCreatedBy);
                     }catch(Exception ex){
                         CreatedBy.setText("N/A");
+                        tv.setCreatedBy("N/A");
                     }
 
                     try{
@@ -102,14 +146,17 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                     }
 
                     ProductionCompany.setText(mixedCompany);
+                    tv.setProductionCompany(mixedCompany);
                     }catch(Exception ex){
 
                         ProductionCompany.setText("N/A");
+                        tv.setProductionCompany("N/A");
                     }
 
                     FirstAiring.setText(response.getString("first_air_date"));
+                    tv.setFirstAiringDate(response.getString("first_air_date"));
                     LastAiring.setText(response.getString("last_air_date"));
-
+                    tv.setLastAiringDate(response.getString("last_air_date"));
                     try {
                         Integer amountOfSeasons = 0;
 
@@ -123,14 +170,16 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                         }
 
                         Seasons.setText(String.format("%s Seasons with %s Total Episodes", String.valueOf(amountOfSeasons), String.valueOf(amountOfTotalEpisodes)));
-
+                        tv.setAmountOfSeasons(String.format("%s Seasons with %s Total Episodes", String.valueOf(amountOfSeasons), String.valueOf(amountOfTotalEpisodes)));
                     }catch (Exception ex){
                         Seasons.setText("N/A");
+                        tv.setAmountOfSeasons("N/A");
 
                     }
                     VoteAverage.setText(response.getString("vote_average"));
+                    tv.setVoteAverage("N/A");
                     final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout2);
-
+                    tv.setImage(response.getString("poster_path"));
                     Glide.with(ItemDetailActivityTV.this).load(AppVariable.TMDB_BASEPATH_IMG_ORIGINAL+response.getString("poster_path")).asBitmap().into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -138,6 +187,8 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                             ctl.setBackground(d);
                         }
                     });
+
+                    isFinished = true;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

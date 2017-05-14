@@ -41,11 +41,11 @@
             </menu>
         </item>
 
-        <item
-            android:id="@+id/nav_saved"
-            android:icon="@drawable/ic_archive_black_24dp"
-            android:title="Saved" />
-    </group>
 
+    </group>
+    <item
+        android:id="@+id/nav_saved"
+        android:icon="@drawable/ic_archive_black_24dp"
+        android:title="Saved" />
 
 </menu>

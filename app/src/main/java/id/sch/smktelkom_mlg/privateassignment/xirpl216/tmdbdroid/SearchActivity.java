@@ -41,6 +41,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         kind = getIntent().getStringExtra("kind");
         query = getIntent().getStringExtra("query");
         if(kind != null && query != null){
@@ -98,6 +99,13 @@ public class SearchActivity extends AppCompatActivity {
         }else{
             processTheFuckingDataTV();
         }
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     private void processTheFuckingDataTV() {

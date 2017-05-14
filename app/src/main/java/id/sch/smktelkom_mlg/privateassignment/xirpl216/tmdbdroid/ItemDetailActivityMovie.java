@@ -2,6 +2,7 @@ package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Movie;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -29,13 +30,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 import id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid.Adapter.MainGridAdapter;
+import id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid.DB.Movies;
 import id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid.Model.MainGrid;
 
 public class ItemDetailActivityMovie extends AppCompatActivity {
 
     TextView OriginalTitle, Overview, Status, ReleaseDate, Runtime, VoteAverage, Creator;
-
+    Movies m = null;
     boolean isFinished = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +60,55 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                saveToDb(view);
             }
         });
 
         setTitle(getIntent().getStringExtra("title"));
-        showSomeMovieGoodness();
+
+        if(getIntent().getBooleanExtra("archive",false) == true){
+
+            fetchOffline();
+        }else{
+
+            showSomeMovieGoodness();
+        }
+    }
+    private void fetchOffline() {
+        List<Movies> selectedMovie = Movies.find(Movies.class,"movie_id = ?",getIntent().getStringExtra("id"));
+        Movies myMov = selectedMovie.get(0);
+        setTitle(myMov.getTitle());
+        OriginalTitle.setText(myMov.getOriginalTitle());
+        Overview.setText(myMov.getOverview());
+        Status.setText(myMov.getStatus());
+        ReleaseDate.setText(myMov.getReleaseDate());
+        Runtime.setText(myMov.getRuntime());
+        VoteAverage.setText(myMov.getVoteAverage());
+        Creator.setText(myMov.getCreator());
+
+        final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+
+        Glide.with(ItemDetailActivityMovie.this).load(AppVariable.TMDB_BASEPATH_IMG_ORIGINAL+myMov.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                Drawable d = new BitmapDrawable(getResources(),resource);
+                ctl.setBackground(d);
+            }
+        });
+    }
+
+    private void saveToDb(View view) {
+        if(isFinished == true){
+            //List<Movies> existsMovie = Movies.find(Movies.class,"movieId = ?",m.getMovieId());
+
+            if(true){
+                m.save();
+                Snackbar.make(view, "Movie Archived, You can show this information anytime without internet now.", Snackbar.LENGTH_LONG)
+                        .setAction("Got It", null).show();
+            }
+
+        }
     }
 
     private void showSomeMovieGoodness() {
@@ -101,6 +147,9 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
                             ctl.setBackground(d);
                         }
                     });
+
+                    m = new Movies(getIntent().getStringExtra("id"),response.getString("poster_path"),getIntent().getStringExtra("title"),response.getString("original_title"),response.getString("overview"),response.getString("status"),creatorTxt,response.getString("release_date"),response.getString("runtime"),response.getString("vote_average"),"");
+                    isFinished = true;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
