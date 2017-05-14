@@ -14,6 +14,8 @@ public class Saved {
         this.overview = overview;
     }
 
+    public Saved(){}
+
     public String getTitle() {
         return title;
     }

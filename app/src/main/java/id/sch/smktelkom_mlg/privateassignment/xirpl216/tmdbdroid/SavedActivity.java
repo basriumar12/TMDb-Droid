@@ -58,6 +58,7 @@ public class SavedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved);
+        setTitle("Saved");
         spa = new SavedPagerAdapter(getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(spa);

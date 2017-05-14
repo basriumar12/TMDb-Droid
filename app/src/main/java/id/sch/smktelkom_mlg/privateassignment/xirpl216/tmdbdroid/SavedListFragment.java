@@ -3,6 +3,7 @@ package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +69,11 @@ public class SavedListFragment extends Fragment {
             for(int i = 0; i < tv.size(); i++){
                 TVShows current = tv.get(i);
 
-                Saved s = new Saved(current.getTitle(),current.getYear(),current.getTvId(),current.getOverview());
+                Saved s = new Saved();
+                s.setId(current.getTvId());
+                s.setOverview(current.getOverview());
+                s.setTitle(current.getTitle());
+                s.setYear(current.getYear());
                 sg.add(s);
             }
             notifyRv();
@@ -96,6 +103,7 @@ public class SavedListFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Saved selectedMG = sg.get(position);
+                Log.d("SMG",selectedMG.getTitle());
                 if(kind == "movie"){
                     Intent i = new Intent(getContext(),ItemDetailActivityMovie.class);
                     i.putExtra("title",selectedMG.getTitle());
@@ -114,7 +122,19 @@ public class SavedListFragment extends Fragment {
 
             @Override
             public void onLongItemClick(View view, int position) {
+                Saved SelectedMG = sg.get(position);
+                String dataID = SelectedMG.getId();
 
+                if(kind == "movie"){
+                    List<Movies> selectedMovies = Movies.find(Movies.class,"movie_id = ?",dataID);
+                    Movies m = selectedMovies.get(0);
+                    Boolean isDeleted = m.delete();
+
+                }else if(kind == "tv"){
+                    List<TVShows> selectedTVShows = TVShows.find(TVShows.class,"tv_id = ?",dataID);
+                    TVShows t = selectedTVShows.get(0);
+                    Boolean isDeleted = t.delete();
+                }
             }
         }));
     }

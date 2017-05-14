@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -77,6 +78,7 @@ public class ItemDetailActivityTV extends AppCompatActivity {
     }
 
     private void fetchOffline() {
+        Log.d("APPID",getIntent().getStringExtra("id"));
         List<TVShows> ltv = TVShows.find(TVShows.class,"tv_id = ?",getIntent().getStringExtra("id"));
         TVShows myTv = ltv.get(0);
 
@@ -108,7 +110,8 @@ public class ItemDetailActivityTV extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-
+                    tv.setTitle(getIntent().getStringExtra("title"));
+                    tv.setTvId(getIntent().getStringExtra("id"));
                     OriginalName.setText(response.getString("original_name"));
                     tv.setOriginalTitle(response.getString("original_name"));
                     Overview.setText(response.getString("overview"));
