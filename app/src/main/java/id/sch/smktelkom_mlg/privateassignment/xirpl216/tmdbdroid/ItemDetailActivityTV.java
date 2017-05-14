@@ -1,5 +1,6 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
+import android.app.ProgressDialog;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -41,13 +42,21 @@ public class ItemDetailActivityTV extends AppCompatActivity {
     TextView OriginalName,Overview,Status,CreatedBy,ProductionCompany,FirstAiring,LastAiring,Seasons,VoteAverage;
     public TVShows tv = new TVShows();
     public Boolean isFinished = false;
+    public ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail_tv);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+        progress = new ProgressDialog(this);
+        new Prefs.Builder()
+                .setContext(this)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
+
         OriginalName = (TextView)findViewById(R.id.tvTvOriginalName);
         Overview = (TextView)findViewById(R.id.tvTvOverview);
         Status = (TextView)findViewById(R.id.tvTvStatus);
@@ -70,12 +79,26 @@ public class ItemDetailActivityTV extends AppCompatActivity {
             }
         });
 
-        new Prefs.Builder()
-                .setContext(this)
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(getPackageName())
-                .setUseDefaultSharedPreference(true)
-                .build();
+
+
+        setTitle(getIntent().getStringExtra("title"));
+
+        if(getIntent().getBooleanExtra("archive",false) == true){
+            fab.setVisibility(View.INVISIBLE);
+            fetchOffline();
+            showGuide();
+        }else{
+
+            showSomeTVShowGoodness();
+            progress.setTitle("Loading");
+            progress.setMessage("Fetching data from server");
+            progress.setCancelable(false);
+            progress.show();
+        }
+    }
+
+    private void showGuide(){
+
         if(Prefs.getBoolean("showTipsAtDetail",true) == true){
             new ShowcaseView.Builder(this)
                     .setContentTitle("Tips")
@@ -87,18 +110,7 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                     .build();
             Prefs.putBoolean("showTipsAtDetail",false);
         }
-
-        setTitle(getIntent().getStringExtra("title"));
-
-        if(getIntent().getBooleanExtra("archive",false) == true){
-
-            fetchOffline();
-        }else{
-
-            showSomeTVShowGoodness();
-        }
     }
-
     private void fetchOffline() {
         Log.d("APPID",getIntent().getStringExtra("id"));
         List<TVShows> ltv = TVShows.find(TVShows.class,"tv_id = ?",getIntent().getStringExtra("id"));
@@ -214,6 +226,9 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                     });
 
                     isFinished = true;
+                    progress.dismiss();
+                    showGuide();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

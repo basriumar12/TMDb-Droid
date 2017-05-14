@@ -1,5 +1,6 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
+import android.app.ProgressDialog;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,6 +46,7 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
     TextView OriginalTitle, Overview, Status, ReleaseDate, Runtime, VoteAverage, Creator;
     Movies m = null;
     boolean isFinished = false;
+    public ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
+        progress = new ProgressDialog(this);
         OriginalTitle = (TextView) findViewById(R.id.tvOriginalTitle);
         Overview = (TextView) findViewById(R.id.tvOverview);
         Status = (TextView) findViewById(R.id.tvStatus);
@@ -79,24 +81,19 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
                 .setPrefsName(getPackageName())
                 .setUseDefaultSharedPreference(true)
                 .build();
-        if(Prefs.getBoolean("showTipsAtDetail",true) == true){
-            new ShowcaseView.Builder(this)
-                    .setContentTitle("Tips")
-                    .setContentText("You can save your favourite TV Show or Movie offline, Click this button to save it.")
-                    .setTarget(new ViewTarget(R.id.fab,this))
-                    .setStyle(10)
-                    .hideOnTouchOutside()
-                    .withMaterialShowcase()
-                    .build();
-            Prefs.putBoolean("showTipsAtDetail",false);
-        }
+
 
         if(getIntent().getBooleanExtra("archive",false) == true){
-
+            fab.setVisibility(View.INVISIBLE);
             fetchOffline();
+            showGuide();
         }else{
 
             showSomeMovieGoodness();
+            progress.setTitle("Loading");
+            progress.setMessage("Fetching data from server");
+            progress.setCancelable(false);
+            progress.show();
         }
     }
     private void fetchOffline() {
@@ -120,6 +117,21 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
                 ctl.setBackground(d);
             }
         });
+    }
+
+    private void showGuide(){
+
+        if(Prefs.getBoolean("showTipsAtDetail",true) == true){
+            new ShowcaseView.Builder(this)
+                    .setContentTitle("Tips")
+                    .setContentText("You can save your favourite TV Show or Movie offline, Click this button to save it.")
+                    .setTarget(new ViewTarget(R.id.fab,this))
+                    .setStyle(10)
+                    .hideOnTouchOutside()
+                    .withMaterialShowcase()
+                    .build();
+            Prefs.putBoolean("showTipsAtDetail",false);
+        }
     }
 
     private void saveToDb(View view) {
@@ -174,6 +186,9 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
 
                     m = new Movies(getIntent().getStringExtra("id"),response.getString("poster_path"),getIntent().getStringExtra("title"),response.getString("original_title"),response.getString("overview"),response.getString("status"),creatorTxt,response.getString("release_date"),response.getString("runtime"),response.getString("vote_average"),"");
                     isFinished = true;
+
+                    progress.dismiss();
+                    showGuide();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
