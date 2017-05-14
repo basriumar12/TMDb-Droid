@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orm.query.Select;
 
@@ -94,7 +95,7 @@ public class SavedListFragment extends Fragment {
     }
 
     private void notifyRv(){
-        SavedAdapter sgAdapter = new SavedAdapter(getActivity(),sg);
+        final SavedAdapter sgAdapter = new SavedAdapter(getActivity(),sg);
         rv.setAdapter(sgAdapter);
         if(rv.getAdapter() != null) {
             rv.swapAdapter(sgAdapter, true);
@@ -129,11 +130,20 @@ public class SavedListFragment extends Fragment {
                     List<Movies> selectedMovies = Movies.find(Movies.class,"movie_id = ?",dataID);
                     Movies m = selectedMovies.get(0);
                     Boolean isDeleted = m.delete();
-
+                    if(isDeleted){
+                        sg.remove(position);
+                        sgAdapter.notifyDataSetChanged();
+                        Snackbar.make(view,"Item Deleted",Snackbar.LENGTH_SHORT).show();
+                    }
                 }else if(kind == "tv"){
                     List<TVShows> selectedTVShows = TVShows.find(TVShows.class,"tv_id = ?",dataID);
                     TVShows t = selectedTVShows.get(0);
                     Boolean isDeleted = t.delete();
+                    if(isDeleted){
+                        sg.remove(position);
+                        sgAdapter.notifyDataSetChanged();
+                        Snackbar.make(view,"Item Deleted",Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             }
         }));

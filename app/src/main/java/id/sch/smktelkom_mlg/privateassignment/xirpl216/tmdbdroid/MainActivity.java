@@ -1,6 +1,8 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +20,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseDrawer;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.pixplicity.easyprefs.library.Prefs;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +39,12 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new Prefs.Builder()
+                .setContext(this)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,6 +59,31 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setCheckedItem(R.id.mov_popular);
         onNavigationItemSelected(navigationView.getMenu().findItem(R.id.mov_popular));
+
+        Target homeTarget = new Target() {
+            @Override
+            public Point getPoint() {
+                // Get approximate position of home icon's center
+                int actionBarSize = toolbar.getHeight();
+                actionBarSize = actionBarSize;
+                int x = actionBarSize / 2;
+                int y = actionBarSize / 2;
+                return new Point(x, y);
+            }
+        };
+
+        if(Prefs.getBoolean("showTipsAtMain",true) == true){
+            new ShowcaseView.Builder(this)
+                    .setContentTitle("Get Started")
+                    .setContentText("Swipe or click to begin, or you can search with Search button.")
+                    .setTarget(homeTarget)
+                    .setStyle(10)
+                    .hideOnTouchOutside()
+                    .withMaterialShowcase()
+                    .build();
+            Prefs.putBoolean("showTipsAtMain",false);
+        }
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,9 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +69,24 @@ public class ItemDetailActivityTV extends AppCompatActivity {
                 }
             }
         });
+
+        new Prefs.Builder()
+                .setContext(this)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
+        if(Prefs.getBoolean("showTipsAtDetail",true) == true){
+            new ShowcaseView.Builder(this)
+                    .setContentTitle("Tips")
+                    .setContentText("You can save your favourite TV Show or Movie offline, Click this button to save it.")
+                    .setTarget(new ViewTarget(R.id.fab,this))
+                    .setStyle(10)
+                    .hideOnTouchOutside()
+                    .withMaterialShowcase()
+                    .build();
+            Prefs.putBoolean("showTipsAtDetail",false);
+        }
 
         setTitle(getIntent().getStringExtra("title"));
 
