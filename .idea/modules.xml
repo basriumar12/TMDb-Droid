@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TMDbDroid.iml" filepath="$PROJECT_DIR$/TMDbDroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TMDb-Droid.iml" filepath="$PROJECT_DIR$/TMDb-Droid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

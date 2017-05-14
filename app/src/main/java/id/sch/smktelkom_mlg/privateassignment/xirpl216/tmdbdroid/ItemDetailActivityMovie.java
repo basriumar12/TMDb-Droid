@@ -1,7 +1,11 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl216.tmdbdroid;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +20,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,8 +89,18 @@ public class ItemDetailActivityMovie extends AppCompatActivity {
 
                     Creator.setText(creatorTxt);
                     ReleaseDate.setText(response.getString("release_date"));
-                    Runtime.setText(response.getString("runtime"));
+                    Runtime.setText(response.getString("runtime") + " Minutes");
                     VoteAverage.setText(response.getString("vote_average"));
+
+                    final CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+
+                    Glide.with(ItemDetailActivityMovie.this).load(AppVariable.TMDB_BASEPATH_IMG_ORIGINAL+response.getString("poster_path")).asBitmap().into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            Drawable d = new BitmapDrawable(getResources(),resource);
+                            ctl.setBackground(d);
+                        }
+                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

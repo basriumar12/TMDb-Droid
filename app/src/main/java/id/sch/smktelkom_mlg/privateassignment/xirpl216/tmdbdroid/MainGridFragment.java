@@ -43,8 +43,8 @@ public class MainGridFragment extends Fragment {
     public MainGridFragment() {
         // Required empty public constructor
     }
-
-
+    public Integer page = 1;
+    public List<MainGrid> mg;
     private GridLayoutManager lLayout;
     private RecyclerView rv;
 
@@ -81,7 +81,7 @@ public class MainGridFragment extends Fragment {
     private void doSomething() {
         Log.d("TRIGGER","DO SOMETHING IS TRIGGERED!");
         //final List<MainGrid> rowList = fetchDataFromInternet();
-        final List<MainGrid> mg = new ArrayList<MainGrid>();
+        mg = new ArrayList<MainGrid>();
 
         Bundle bundle = this.getArguments();
         if(!bundle.isEmpty()){
@@ -92,7 +92,7 @@ public class MainGridFragment extends Fragment {
         }
 
         RequestQueue rq = Volley.newRequestQueue(getContext());
-        String url = String.format("https://api.themoviedb.org/3/%s/%s?api_key=%s&page=%s&language=en-US",kind,type,AppVariable.TMDB_APIKEY,"1");
+        String url = String.format("https://api.themoviedb.org/3/%s/%s?api_key=%s&page=%s&language=en-US",kind,type,AppVariable.TMDB_APIKEY,String.valueOf(page));
         Log.d("??",url);
         JsonObjectRequest jObj = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -122,34 +122,7 @@ public class MainGridFragment extends Fragment {
 
                         if(i == jA.length() - 1){
                             // At Least it works btw.
-                            MainGridAdapter mgAdapter = new MainGridAdapter(getActivity(),mg);
-                            rv.setAdapter(mgAdapter);
-                            if(rv.getAdapter() != null) {
-                                rv.swapAdapter(mgAdapter, true);
-                            }
-                            rv.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(View view, int position) {
-                                    MainGrid selectedMG = mg.get(position);
-                                    if(kind == "movie"){
-                                        Intent i = new Intent(getContext(),ItemDetailActivityMovie.class);
-                                        i.putExtra("title",selectedMG.getTitle());
-                                        i.putExtra("id",selectedMG.getId());
-                                        startActivity(i);
-                                    }else if(kind == "tv"){
-                                        Intent i = new Intent(getContext(),ItemDetailActivityTV.class);
-                                        i.putExtra("title",selectedMG.getTitle());
-                                        i.putExtra("id",selectedMG.getId());
-                                        startActivity(i);
-                                    }
-                                    //Toast.makeText(getContext(),selectedMG.getId(),Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onLongItemClick(View view, int position) {
-
-                                }
-                            }));
+                            setTv();
                         }
                     }
                 } catch (JSONException e) {
@@ -168,6 +141,37 @@ public class MainGridFragment extends Fragment {
         for(int i = 0; i < 20; i++){
             //mg.add(new MainGrid("https://image.tmdb.org/t/p/w500_and_h281_bestv2/tQkigP2fItdzJWvtIhBvHxgs5yE.jpg","It's a fucking long movie title " + String.valueOf(i)));
         }
+    }
+
+    private void setTv() {
+        MainGridAdapter mgAdapter = new MainGridAdapter(getActivity(),mg);
+        rv.setAdapter(mgAdapter);
+        if(rv.getAdapter() != null) {
+            rv.swapAdapter(mgAdapter, true);
+        }
+        rv.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                MainGrid selectedMG = mg.get(position);
+                if(kind == "movie"){
+                    Intent i = new Intent(getContext(),ItemDetailActivityMovie.class);
+                    i.putExtra("title",selectedMG.getTitle());
+                    i.putExtra("id",selectedMG.getId());
+                    startActivity(i);
+                }else if(kind == "tv"){
+                    Intent i = new Intent(getContext(),ItemDetailActivityTV.class);
+                    i.putExtra("title",selectedMG.getTitle());
+                    i.putExtra("id",selectedMG.getId());
+                    startActivity(i);
+                }
+                //Toast.makeText(getContext(),selectedMG.getId(),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
     }
 
 
